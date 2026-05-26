@@ -8,13 +8,13 @@ class Password_Reset_Endpoints {
     private const CODE_TTL = 3600;
 
     public function register_routes() {
-        \register_rest_route( 'wp/v2', '/users/reset-password/generate', [
+        \register_rest_route( 'shopmobi/v1', '/users/reset-password/generate', [
             'methods'             => 'POST',
             'callback'            => [ $this, 'generate' ],
             'permission_callback' => '__return_true',
         ] );
 
-        \register_rest_route( 'wp/v2', '/users/reset-password/verify', [
+        \register_rest_route( 'shopmobi/v1', '/users/reset-password/verify', [
             'methods'             => 'POST',
             'callback'            => [ $this, 'verify' ],
             'permission_callback' => '__return_true',

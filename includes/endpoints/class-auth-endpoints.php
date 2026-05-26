@@ -6,19 +6,19 @@ defined( 'ABSPATH' ) || exit;
 class Auth_Endpoints {
 
     public function register_routes() {
-        \register_rest_route( 'wp/v2', '/users/login', [
+        \register_rest_route( 'shopmobi/v1', '/users/login', [
             'methods'             => 'POST',
             'callback'            => [ $this, 'login' ],
             'permission_callback' => '__return_true',
         ] );
 
-        \register_rest_route( 'wp/v2', '/users/register', [
+        \register_rest_route( 'shopmobi/v1', '/users/register', [
             'methods'             => 'POST',
             'callback'            => [ $this, 'register' ],
             'permission_callback' => '__return_true',
         ] );
 
-        \register_rest_route( 'wp/v2', '/users/update-profile', [
+        \register_rest_route( 'shopmobi/v1', '/users/update-profile', [
             'methods'             => 'POST',
             'callback'            => [ $this, 'update_profile' ],
             'permission_callback' => '__return_true',

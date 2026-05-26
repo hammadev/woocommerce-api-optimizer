@@ -6,11 +6,15 @@ defined( 'ABSPATH' ) || exit;
 class Stripe_Payment_Endpoint {
 
     public function register_routes() {
-        \register_rest_route( 'wp/v2', '/stripe-payment', [
+        \register_rest_route( 'shopmobi/v1', '/stripe-payment', [
             'methods'             => 'POST',
             'callback'            => [ $this, 'create_payment_intent' ],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [ $this, 'is_user_authenticated' ],
         ] );
+    }
+
+    public function is_user_authenticated(): bool {
+        return \is_user_logged_in();
     }
 
     public function create_payment_intent( \WP_REST_Request $request ) {
@@ -33,7 +37,7 @@ class Stripe_Payment_Endpoint {
         }
 
         $order_amount = \absint( $request['order_amount'] ?? 0 );
-        $user_id      = \absint( $request['user_id'] ?? 0 );
+        $user_id      = \get_current_user_id();
 
         $stripe      = new \Stripe\StripeClient( $secret_key );
         $customer_id = $this->get_or_create_customer( $stripe, $user_id );

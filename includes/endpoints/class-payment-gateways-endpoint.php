@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 class Payment_Gateways_Endpoint {
 
     public function register_routes() {
-        \register_rest_route( 'wp/v2', '/payment-gateways', [
+        \register_rest_route( 'shopmobi/v1', '/payment-gateways', [
             'methods'             => 'GET',
             'callback'            => [ $this, 'get_gateways' ],
             'permission_callback' => '__return_true',

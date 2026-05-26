@@ -52,7 +52,7 @@ class Settings_Page {
         if ( ! \current_user_can( 'manage_options' ) ) return;
         ?>
         <div class="wrap">
-            <h1><?php \esc_html_e( 'WC API Optimizer — WooLaunch', 'wc-api-optimizer' ); ?></h1>
+            <h1><?php \esc_html_e( 'API Optimizer for WooCommerce', 'wc-api-optimizer' ); ?></h1>
 
             <h2 class="nav-tab-wrapper">
                 <span class="nav-tab nav-tab-active">Stripe</span>

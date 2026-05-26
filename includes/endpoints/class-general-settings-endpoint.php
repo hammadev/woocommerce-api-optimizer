@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 class General_Settings_Endpoint {
 
     public function register_routes() {
-        \register_rest_route( 'wp/v2', '/general-settings', [
+        \register_rest_route( 'shopmobi/v1', '/general-settings', [
             'methods'             => 'GET',
             'callback'            => [ $this, 'get_settings' ],
             'permission_callback' => '__return_true',
