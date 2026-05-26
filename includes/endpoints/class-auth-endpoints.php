@@ -33,7 +33,7 @@ class Auth_Endpoints {
         ], false );
 
         if ( \is_wp_error( $user ) ) {
-            return new \WP_Error( 403, strip_tags( $user->get_error_message() ), [ 'status' => 403 ] );
+            return new \WP_Error( 403, \wp_strip_all_tags( $user->get_error_message() ), [ 'status' => 403 ] );
         }
 
         return new \WP_REST_Response( [

@@ -28,7 +28,7 @@ class Password_Reset_Endpoints {
             return new \WP_Error( 'user_not_found', 'User not found.', [ 'status' => 404 ] );
         }
 
-        $code = str_pad( mt_rand( 0, 9999 ), 4, '0', STR_PAD_LEFT );
+        $code = str_pad( \wp_rand( 0, 9999 ), 4, '0', STR_PAD_LEFT );
         \update_user_meta( $user->ID, 'reset_code',            $code );
         \update_user_meta( $user->ID, 'reset_code_expiration', time() + self::CODE_TTL );
 
