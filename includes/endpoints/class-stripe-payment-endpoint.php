@@ -6,7 +6,7 @@ defined( 'ABSPATH' ) || exit;
 class Stripe_Payment_Endpoint {
 
     public function register_routes() {
-        register_rest_route( 'wp/v2', '/stripe-payment', [
+        \register_rest_route( 'wp/v2', '/stripe-payment', [
             'methods'             => 'POST',
             'callback'            => [ $this, 'create_payment_intent' ],
             'permission_callback' => '__return_true',
@@ -14,7 +14,7 @@ class Stripe_Payment_Endpoint {
     }
 
     public function create_payment_intent( \WP_REST_Request $request ) {
-        $secret_key = get_option( 'wc_api_optz_stripe_secret_key', '' );
+        $secret_key = \get_option( 'wc_api_optz_stripe_secret_key', '' );
 
         if ( empty( $secret_key ) ) {
             return new \WP_Error(
@@ -32,8 +32,8 @@ class Stripe_Payment_Endpoint {
             );
         }
 
-        $order_amount = absint( $request['order_amount'] ?? 0 );
-        $user_id      = absint( $request['user_id'] ?? 0 );
+        $order_amount = \absint( $request['order_amount'] ?? 0 );
+        $user_id      = \absint( $request['user_id'] ?? 0 );
 
         $stripe      = new \Stripe\StripeClient( $secret_key );
         $customer_id = $this->get_or_create_customer( $stripe, $user_id );
@@ -45,7 +45,7 @@ class Stripe_Payment_Endpoint {
 
         $intent = $stripe->paymentIntents->create( [
             'amount'                    => $order_amount * 100,
-            'currency'                  => strtolower( get_woocommerce_currency() ),
+            'currency'                  => strtolower( \get_woocommerce_currency() ),
             'customer'                  => $customer_id,
             'automatic_payment_methods' => [ 'enabled' => true ],
         ] );
@@ -54,16 +54,16 @@ class Stripe_Payment_Endpoint {
             'paymentIntent'  => $intent->client_secret,
             'ephemeralKey'   => $ephemeral_key->secret,
             'customer'       => $customer_id,
-            'publishableKey' => get_option( 'wc_api_optz_stripe_public_key', '' ),
+            'publishableKey' => \get_option( 'wc_api_optz_stripe_public_key', '' ),
         ];
     }
 
     private function get_or_create_customer( \Stripe\StripeClient $stripe, int $user_id ): string {
-        $existing = get_user_meta( $user_id, 'stripe_cust_id', true );
+        $existing = \get_user_meta( $user_id, 'stripe_cust_id', true );
         if ( $existing ) return $existing;
 
         $customer = $stripe->customers->create();
-        update_user_meta( $user_id, 'stripe_cust_id', $customer->id );
+        \update_user_meta( $user_id, 'stripe_cust_id', $customer->id );
         return $customer->id;
     }
 }

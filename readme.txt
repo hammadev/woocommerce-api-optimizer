@@ -1,4 +1,4 @@
-=== WC API Optimizer ===
+=== WC API Optimizer — by WooLaunch ===
 Contributors: hammadanwar
 Tags: woocommerce, rest-api, api, performance, field-filtering
 Requires at least: 5.8
@@ -8,11 +8,17 @@ Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Optimizes WooCommerce REST API responses with field filtering and adds custom endpoints for auth, Stripe payments, and store settings.
+Your WooCommerce Store Deserves a Better API. GraphQL-like field filtering over REST — plus login and Stripe payments, out of the box.
 
 == Description ==
 
-WC API Optimizer reduces the payload size of WooCommerce REST API responses by allowing clients to request only the fields they need — via request header or query parameter. It also ships a set of custom endpoints for mobile and headless app integration.
+**Your WooCommerce Store Deserves a Better API.**
+
+Stop receiving 50+ fields when your app needs 3. WooLaunch gives your store GraphQL-like flexibility over REST — plus login & Stripe payments, out of the box.
+
+Used by 000+ WooCommerce stores powering mobile apps & SPAs.
+
+WC API Optimizer is the backend engine for mobile and headless WooCommerce apps. Reduce payload size by requesting only the fields you need — via request header or query parameter — and ship custom endpoints your app actually uses.
 
 = Field Filtering =
 

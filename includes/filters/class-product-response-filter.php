@@ -17,7 +17,7 @@ class Product_Response_Filter {
 
         $variations = [];
         foreach ( $variation_ids as $variation_id ) {
-            $variation = new \WC_Product_Variation( $variation_id );
+            $variation    = new \WC_Product_Variation( $variation_id );
             $variations[] = $this->format_variation( $variation, $variation_id );
         }
 
@@ -28,7 +28,7 @@ class Product_Response_Filter {
     private function format_variation( \WC_Product_Variation $variation, int $id ): array {
         $qty = $variation->get_stock_quantity();
 
-        $data = [
+        return [
             'id'            => $id,
             'sku'           => $variation->get_sku(),
             'on_sale'       => $variation->is_on_sale(),
@@ -39,8 +39,6 @@ class Product_Response_Filter {
             'attributes'    => $this->format_attributes( $variation ),
             'image'         => $this->format_image( $variation ),
         ];
-
-        return $data;
     }
 
     private function format_attributes( \WC_Product_Variation $variation ): array {
@@ -48,8 +46,8 @@ class Product_Response_Filter {
         foreach ( $variation->get_variation_attributes() as $raw_name => $option ) {
             $name = str_replace( 'attribute_', '', $raw_name );
             $attributes[] = [
-                'name'   => wc_attribute_label( $name, $variation ),
-                'slug'   => str_replace( 'attribute_', '', wc_attribute_taxonomy_slug( $name ) ),
+                'name'   => \wc_attribute_label( $name, $variation ),
+                'slug'   => str_replace( 'attribute_', '', \wc_attribute_taxonomy_slug( $name ) ),
                 'option' => $option,
             ];
         }
@@ -60,7 +58,7 @@ class Product_Response_Filter {
         $image_id = $variation->get_image_id();
         if ( ! $image_id ) return null;
 
-        $src = wp_get_attachment_image_src( $image_id, 'full' );
+        $src = \wp_get_attachment_image_src( $image_id, 'full' );
         return $src ? $src[0] : null;
     }
 }
