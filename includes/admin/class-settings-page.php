@@ -5,13 +5,15 @@ defined( 'ABSPATH' ) || exit;
 
 class Settings_Page {
 
+    private const PAGE_SLUG = 'shopmobi-api-optimizer';
+
     public function add_page() {
         \add_submenu_page(
             'woocommerce',
-            'API Optimizer for WooCommerce',
+            'ShopMobi – API Optimizer for WooCommerce',
             'API Optimizer',
             'manage_options',
-            'wc-api-optimizer',
+            self::PAGE_SLUG,
             [ $this, 'render' ]
         );
     }
@@ -27,15 +29,15 @@ class Settings_Page {
         \add_settings_section(
             'shopmobi_ao_stripe',
             'Stripe Configuration',
-            null,
-            'wc-api-optimizer'
+            '__return_false',
+            self::PAGE_SLUG
         );
 
         \add_settings_field(
             'stripe_secret_key',
             'Secret Key',
             [ $this, 'render_secret_key_field' ],
-            'wc-api-optimizer',
+            self::PAGE_SLUG,
             'shopmobi_ao_stripe'
         );
 
@@ -43,7 +45,7 @@ class Settings_Page {
             'stripe_public_key',
             'Publishable Key',
             [ $this, 'render_public_key_field' ],
-            'wc-api-optimizer',
+            self::PAGE_SLUG,
             'shopmobi_ao_stripe'
         );
     }
@@ -52,7 +54,7 @@ class Settings_Page {
         if ( ! \current_user_can( 'manage_options' ) ) return;
         ?>
         <div class="wrap">
-            <h1><?php \esc_html_e( 'API Optimizer for WooCommerce', 'wc-api-optimizer' ); ?></h1>
+            <h1><?php \esc_html_e( 'ShopMobi – API Optimizer for WooCommerce', 'api-optimizer-for-woocommerce' ); ?></h1>
 
             <h2 class="nav-tab-wrapper">
                 <span class="nav-tab nav-tab-active">Stripe</span>
@@ -68,7 +70,7 @@ class Settings_Page {
             <form method="post" action="options.php" style="margin-top:20px;">
                 <?php
                 \settings_fields( 'shopmobi_ao_settings' );
-                \do_settings_sections( 'wc-api-optimizer' );
+                \do_settings_sections( self::PAGE_SLUG );
                 \submit_button( 'Save Settings' );
                 ?>
             </form>
