@@ -1,4 +1,4 @@
-# API Optimizer for WooCommerce
+# ShopMobi – API Optimizer for WooCommerce
 
 > Stop receiving 50+ fields when your app needs 3. ShopMobi gives your store GraphQL-like flexibility over REST — plus login & Stripe payments, out of the box.
 
@@ -9,6 +9,7 @@ A WordPress plugin that optimizes WooCommerce REST API responses with field filt
 ## Features
 
 ### Field Filtering
+
 Reduce response payload by requesting only the fields you need — on any WooCommerce REST API endpoint.
 
 | Method | Include fields | Exclude fields |
@@ -20,18 +21,21 @@ Header takes priority when both are present. Works on `/wc/v3/products`, `/wc/v3
 
 ### Custom Endpoints
 
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| POST | `/wp-json/wp/v2/users/login` | Cookie-based login |
-| POST | `/wp-json/wp/v2/users/register` | Customer registration |
-| POST | `/wp-json/wp/v2/users/update-profile` | Update name and phone |
-| POST | `/wp-json/wp/v2/users/reset-password/generate` | Send 4-digit email reset code |
-| POST | `/wp-json/wp/v2/users/reset-password/verify` | Verify code and set new password |
-| GET  | `/wp-json/wp/v2/general-settings` | Country, currency, store location, gateways |
-| GET  | `/wp-json/wp/v2/payment-gateways` | Active payment gateways |
-| POST | `/wp-json/wp/v2/stripe-payment` | Create Stripe PaymentIntent + EphemeralKey |
+All custom endpoints are registered under the `shopmobi/v1` namespace.
+
+| Method | Endpoint | Auth required | Description |
+|--------|----------|---------------|-------------|
+| POST | `/wp-json/shopmobi/v1/users/login` | No | Cookie-based login |
+| POST | `/wp-json/shopmobi/v1/users/register` | No | Customer registration |
+| POST | `/wp-json/shopmobi/v1/users/update-profile` | Yes | Update name and phone |
+| POST | `/wp-json/shopmobi/v1/users/reset-password/generate` | No | Send 4-digit email reset code |
+| POST | `/wp-json/shopmobi/v1/users/reset-password/verify` | No | Verify code and set new password |
+| GET  | `/wp-json/shopmobi/v1/general-settings` | No | Country, currency, store location, gateways |
+| GET  | `/wp-json/shopmobi/v1/payment-gateways` | No | Active payment gateways |
+| POST | `/wp-json/shopmobi/v1/stripe-payment` | Yes | Create Stripe PaymentIntent + EphemeralKey |
 
 ### Product Variations
+
 Variation IDs in product responses are automatically replaced with full objects containing attributes, pricing, stock status, and image URL.
 
 ## Requirements
@@ -49,8 +53,8 @@ Download the latest release zip from the [Releases](../../releases) page (includ
 **Option B — From source**
 
 ```bash
-git clone https://github.com/hammadanwar/wc-api-optimizer.git
-cd wc-api-optimizer
+git clone https://github.com/hammadev2/api-optimizer-for-woocommerce.git
+cd api-optimizer-for-woocommerce
 composer install --no-dev --optimize-autoloader
 ```
 
@@ -74,15 +78,28 @@ curl https://example.com/wp-json/wc/v3/products/123 \
   -H "X-WC-Except: meta_data,description,short_description"
 
 # Register a new customer
-curl -X POST https://example.com/wp-json/wp/v2/users/register \
+curl -X POST https://example.com/wp-json/shopmobi/v1/users/register \
   -H "Content-Type: application/json" \
   -d '{"username":"john","email":"john@example.com","password":"secret","name":"John Doe"}'
 
-# Create a Stripe PaymentIntent
-curl -X POST https://example.com/wp-json/wp/v2/stripe-payment \
+# Login
+curl -X POST https://example.com/wp-json/shopmobi/v1/users/login \
   -H "Content-Type: application/json" \
-  -d '{"order_amount": 99, "user_id": 5}'
+  -d '{"username":"john","password":"secret"}'
+
+# Create a Stripe PaymentIntent (requires login cookie)
+curl -X POST https://example.com/wp-json/shopmobi/v1/stripe-payment \
+  -H "Content-Type: application/json" \
+  -H "Cookie: wordpress_logged_in_xxx=..." \
+  -d '{"order_amount": 99}'
 ```
+
+## Third-Party Services
+
+This plugin optionally connects to [Stripe](https://stripe.com) for payment processing. Stripe keys are entered by the site admin and stored in the WordPress database. No data is sent to ShopMobi.
+
+- [Stripe Privacy Policy](https://stripe.com/privacy)
+- [Stripe Terms of Service](https://stripe.com/legal)
 
 ## License
 
