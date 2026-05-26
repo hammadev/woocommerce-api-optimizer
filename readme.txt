@@ -1,5 +1,5 @@
 === API Optimizer for WooCommerce ===
-Contributors: hammadanwar
+Contributors: hammadev2
 Tags: woocommerce, rest-api, api, performance, mobile
 Requires at least: 5.8
 Tested up to: 7.0
@@ -35,7 +35,7 @@ Header takes priority when both are provided. The plugin applies filtering after
 
 = Custom REST Endpoints =
 
-The plugin registers the following custom endpoints under the `wp/v2` namespace:
+The plugin registers the following custom endpoints under the `shopmobi/v1` namespace:
 
 **Authentication**
 

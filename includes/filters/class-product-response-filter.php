@@ -1,5 +1,5 @@
 <?php
-namespace WC_API_Optz\Filters;
+namespace ShopMobi\ApiOptimizer\Filters;
 
 defined( 'ABSPATH' ) || exit;
 

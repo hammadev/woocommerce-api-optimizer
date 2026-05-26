@@ -1,5 +1,5 @@
 <?php
-namespace WC_API_Optz\Admin;
+namespace ShopMobi\ApiOptimizer\Admin;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -17,15 +17,15 @@ class Settings_Page {
     }
 
     public function register_settings() {
-        \register_setting( 'wc_api_optz_settings', 'wc_api_optz_stripe_secret_key', [
+        \register_setting( 'shopmobi_ao_settings', 'shopmobi_ao_stripe_secret_key', [
             'sanitize_callback' => 'sanitize_text_field',
         ] );
-        \register_setting( 'wc_api_optz_settings', 'wc_api_optz_stripe_public_key', [
+        \register_setting( 'shopmobi_ao_settings', 'shopmobi_ao_stripe_public_key', [
             'sanitize_callback' => 'sanitize_text_field',
         ] );
 
         \add_settings_section(
-            'wc_api_optz_stripe',
+            'shopmobi_ao_stripe',
             'Stripe Configuration',
             null,
             'wc-api-optimizer'
@@ -36,7 +36,7 @@ class Settings_Page {
             'Secret Key',
             [ $this, 'render_secret_key_field' ],
             'wc-api-optimizer',
-            'wc_api_optz_stripe'
+            'shopmobi_ao_stripe'
         );
 
         \add_settings_field(
@@ -44,7 +44,7 @@ class Settings_Page {
             'Publishable Key',
             [ $this, 'render_public_key_field' ],
             'wc-api-optimizer',
-            'wc_api_optz_stripe'
+            'shopmobi_ao_stripe'
         );
     }
 
@@ -67,7 +67,7 @@ class Settings_Page {
 
             <form method="post" action="options.php" style="margin-top:20px;">
                 <?php
-                \settings_fields( 'wc_api_optz_settings' );
+                \settings_fields( 'shopmobi_ao_settings' );
                 \do_settings_sections( 'wc-api-optimizer' );
                 \submit_button( 'Save Settings' );
                 ?>
@@ -77,18 +77,18 @@ class Settings_Page {
     }
 
     public function render_secret_key_field() {
-        $value = \get_option( 'wc_api_optz_stripe_secret_key', '' );
+        $value = \get_option( 'shopmobi_ao_stripe_secret_key', '' );
         \printf(
-            '<input type="password" name="wc_api_optz_stripe_secret_key" value="%s" class="regular-text" placeholder="sk_live_..." autocomplete="new-password">',
+            '<input type="password" name="shopmobi_ao_stripe_secret_key" value="%s" class="regular-text" placeholder="sk_live_..." autocomplete="new-password">',
             \esc_attr( $value )
         );
         echo '<p class="description">Starts with <code>sk_live_</code> or <code>sk_test_</code></p>';
     }
 
     public function render_public_key_field() {
-        $value = \get_option( 'wc_api_optz_stripe_public_key', '' );
+        $value = \get_option( 'shopmobi_ao_stripe_public_key', '' );
         \printf(
-            '<input type="text" name="wc_api_optz_stripe_public_key" value="%s" class="regular-text" placeholder="pk_live_...">',
+            '<input type="text" name="shopmobi_ao_stripe_public_key" value="%s" class="regular-text" placeholder="pk_live_...">',
             \esc_attr( $value )
         );
         echo '<p class="description">Starts with <code>pk_live_</code> or <code>pk_test_</code></p>';

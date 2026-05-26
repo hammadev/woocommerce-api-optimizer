@@ -1,5 +1,5 @@
 <?php
-namespace WC_API_Optz\Endpoints;
+namespace ShopMobi\ApiOptimizer\Endpoints;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -18,7 +18,7 @@ class Stripe_Payment_Endpoint {
     }
 
     public function create_payment_intent( \WP_REST_Request $request ) {
-        $secret_key = \get_option( 'wc_api_optz_stripe_secret_key', '' );
+        $secret_key = \get_option( 'shopmobi_ao_stripe_secret_key', '' );
 
         if ( empty( $secret_key ) ) {
             return new \WP_Error(
@@ -58,7 +58,7 @@ class Stripe_Payment_Endpoint {
             'paymentIntent'  => $intent->client_secret,
             'ephemeralKey'   => $ephemeral_key->secret,
             'customer'       => $customer_id,
-            'publishableKey' => \get_option( 'wc_api_optz_stripe_public_key', '' ),
+            'publishableKey' => \get_option( 'shopmobi_ao_stripe_public_key', '' ),
         ];
     }
 

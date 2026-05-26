@@ -1,5 +1,5 @@
 <?php
-namespace WC_API_Optz\Endpoints;
+namespace ShopMobi\ApiOptimizer\Endpoints;
 
 defined( 'ABSPATH' ) || exit;
 

@@ -1,5 +1,5 @@
 <?php
-namespace WC_API_Optz\Endpoints;
+namespace ShopMobi\ApiOptimizer\Endpoints;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -21,8 +21,12 @@ class Auth_Endpoints {
         \register_rest_route( 'shopmobi/v1', '/users/update-profile', [
             'methods'             => 'POST',
             'callback'            => [ $this, 'update_profile' ],
-            'permission_callback' => '__return_true',
+            'permission_callback' => [ $this, 'is_logged_in' ],
         ] );
+    }
+
+    public function is_logged_in(): bool {
+        return \is_user_logged_in();
     }
 
     public function login( \WP_REST_Request $request ) {

@@ -6,6 +6,6 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
-    'WC_API_Optz\\' => array($baseDir . '/includes'),
     'Stripe\\' => array($vendorDir . '/stripe/stripe-php/lib'),
+    'ShopMobi\\ApiOptimizer\\' => array($baseDir . '/includes'),
 );
