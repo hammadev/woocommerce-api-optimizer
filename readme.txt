@@ -1,4 +1,4 @@
-=== WC API Optimizer — by WooLaunch ===
+=== API Optimizer for WooCommerce ===
 Contributors: hammadanwar
 Tags: woocommerce, rest-api, api, performance, field-filtering
 Requires at least: 5.8
@@ -14,11 +14,11 @@ Your WooCommerce Store Deserves a Better API. GraphQL-like field filtering over 
 
 **Your WooCommerce Store Deserves a Better API.**
 
-Stop receiving 50+ fields when your app needs 3. WooLaunch gives your store GraphQL-like flexibility over REST — plus login & Stripe payments, out of the box.
+Stop receiving 50+ fields when your app needs 3. ShopMobi gives your store GraphQL-like flexibility over REST — plus login & Stripe payments, out of the box.
 
 Used by 000+ WooCommerce stores powering mobile apps & SPAs.
 
-WC API Optimizer is the backend engine for mobile and headless WooCommerce apps. Reduce payload size by requesting only the fields you need — via request header or query parameter — and ship custom endpoints your app actually uses.
+API Optimizer for WooCommerce is the backend engine for mobile and headless WooCommerce apps. Reduce payload size by requesting only the fields you need — via request header or query parameter — and ship custom endpoints your app actually uses.
 
 = Field Filtering =
 

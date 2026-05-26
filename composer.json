@@ -11,6 +11,18 @@
             "WC_API_Optz\\": "includes/"
         }
     },
+    "require-dev": {
+        "php-stubs/wordpress-stubs": "^6.0",
+        "php-stubs/woocommerce-stubs": "^9.0"
+    },
+    "extra": {
+        "intelephense": {
+            "stubs": [
+                "vendor/php-stubs/wordpress-stubs/wordpress-stubs.php",
+                "vendor/php-stubs/woocommerce-stubs/woocommerce-stubs.php"
+            ]
+        }
+    },
     "config": {
         "optimize-autoloader": true
     }

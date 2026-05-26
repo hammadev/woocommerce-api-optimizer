@@ -1,10 +1,9 @@
-# WC API Optimizer — by WooLaunch
+# API Optimizer for WooCommerce
 
-> **Your WooCommerce Store Deserves a Better API.**
+> **Your Store Deserves a Better API.**
 >
-> Stop receiving 50+ fields when your app needs 3. WooLaunch gives your store GraphQL-like flexibility over REST — plus login & Stripe payments, out of the box.
+> Stop receiving 50+ fields when your app needs 3. ShopMobi gives your store GraphQL-like flexibility over REST — plus login & Stripe payments, out of the box.
 >
-> _Used by 000+ WooCommerce stores powering mobile apps & SPAs._
 
 ---
 

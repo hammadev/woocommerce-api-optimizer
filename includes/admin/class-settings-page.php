@@ -8,7 +8,7 @@ class Settings_Page {
     public function add_page() {
         \add_submenu_page(
             'woocommerce',
-            'WC API Optimizer — WooLaunch',
+            'API Optimizer for WooCommerce',
             'API Optimizer',
             'manage_options',
             'wc-api-optimizer',

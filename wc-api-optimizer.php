@@ -1,12 +1,11 @@
 <?php
 /**
- * Plugin Name:       WC API Optimizer — by WooLaunch
- * Description:       Your WooCommerce store deserves a better API. Stop receiving 50+ fields when your app needs 3. GraphQL-like field filtering over REST, plus login and Stripe payments out of the box.
+ * Plugin Name:       API Optimizer for WooCommerce
+ * Description:       Your store deserves a better API. Stop receiving 50+ fields when your app needs 3. GraphQL-like field filtering over REST, plus login and Stripe payments out of the box.
  * Version:           1.0.0
  * Requires at least: 5.8
  * Requires PHP:      7.4
- * Author:            WooLaunch
- * Author URI:        https://woolaunch.com
+ * Author:            ShopMobi
  * License:           GPLv2 or later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
  * WC requires at least: 6.0
