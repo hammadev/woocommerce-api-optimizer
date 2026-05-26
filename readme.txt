@@ -12,8 +12,6 @@ Reduce WooCommerce REST API response size by requesting only the fields you need
 
 == Description ==
 
-**Your WooCommerce Store Deserves a Better API.**
-
 Stop receiving 50+ fields when your app needs 3. API Optimizer for WooCommerce gives your store GraphQL-like flexibility over REST — plus login, password reset, and Stripe payments out of the box.
 
 Built for developers building mobile apps, Flutter apps, React Native apps, or any headless WooCommerce frontend.

@@ -1,9 +1,6 @@
 # API Optimizer for WooCommerce
 
-> **Your Store Deserves a Better API.**
->
 > Stop receiving 50+ fields when your app needs 3. ShopMobi gives your store GraphQL-like flexibility over REST — plus login & Stripe payments, out of the box.
->
 
 ---
 
