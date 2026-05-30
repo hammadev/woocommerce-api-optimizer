@@ -5,8 +5,6 @@ defined( 'ABSPATH' ) || exit;
 
 class Password_Reset_Endpoints {
 
-    private const CODE_TTL = 3600;
-
     public function register_routes() {
         \register_rest_route( 'shopmobi/v1', '/users/reset-password/generate', [
             'methods'             => 'POST',
@@ -22,42 +20,58 @@ class Password_Reset_Endpoints {
     }
 
     public function generate( \WP_REST_Request $request ) {
-        $user = \get_user_by( 'login', \sanitize_text_field( $request['username'] ) );
+        $username = \sanitize_text_field( $request['username'] ?? '' );
 
-        if ( ! $user ) {
-            return new \WP_Error( 'user_not_found', 'User not found.', [ 'status' => 404 ] );
+        if ( empty( $username ) ) {
+            return new \WP_Error( 'missing_username', 'Username is required.', [ 'status' => 400 ] );
         }
 
-        $code = str_pad( \wp_rand( 0, 9999 ), 4, '0', STR_PAD_LEFT );
-        \update_user_meta( $user->ID, 'reset_code',            $code );
-        \update_user_meta( $user->ID, 'reset_code_expiration', time() + self::CODE_TTL );
+        $user = \get_user_by( 'login', $username );
+        if ( ! $user ) {
+            $user = \get_user_by( 'email', $username );
+        }
 
-        \wp_mail( $user->user_email, 'Password Reset Code', "Your password reset code is: {$code}" );
+        // Generic message to avoid username enumeration
+        if ( ! $user ) {
+            return [ 'status' => true, 'message' => 'If that account exists, a reset key has been sent.' ];
+        }
 
-        return [ 'status' => true, 'message' => 'Reset code sent to email.' ];
+        // WordPress's own secure reset key — security plugins can intercept this hook
+        $reset_key = \get_password_reset_key( $user );
+
+        if ( \is_wp_error( $reset_key ) ) {
+            return new \WP_Error( 'reset_key_error', 'Could not generate reset key.', [ 'status' => 500 ] );
+        }
+
+        $subject  = 'Password Reset — ' . \get_bloginfo( 'name' );
+        $message  = "Hi {$user->display_name},\n\n";
+        $message .= "Use the key below in the app to reset your password:\n\n";
+        $message .= "Key: {$reset_key}\n\n";
+        $message .= "This key expires in 24 hours. If you did not request a reset, ignore this email.";
+
+        \wp_mail( $user->user_email, $subject, $message );
+
+        return [ 'status' => true, 'message' => 'If that account exists, a reset key has been sent.' ];
     }
 
     public function verify( \WP_REST_Request $request ) {
-        $user = \get_user_by( 'login', \sanitize_text_field( $request['username'] ) );
+        $username     = \sanitize_text_field( $request['username'] ?? '' );
+        $key          = \sanitize_text_field( $request['key'] ?? '' );
+        $new_password = $request['new_password'] ?? '';
 
-        if ( ! $user ) {
-            return new \WP_Error( 'user_not_found', 'User not found.', [ 'status' => 404 ] );
+        if ( empty( $username ) || empty( $key ) || empty( $new_password ) ) {
+            return new \WP_Error( 'missing_params', 'username, key, and new_password are required.', [ 'status' => 400 ] );
         }
 
-        $stored_code = \get_user_meta( $user->ID, 'reset_code', true );
-        $expiry      = (int) \get_user_meta( $user->ID, 'reset_code_expiration', true );
+        // WordPress's own key validation — honours expiry and marks key as used
+        $user = \check_password_reset_key( $key, $username );
 
-        if ( empty( $stored_code ) || $expiry < time() ) {
-            return new \WP_Error( 'invalid_reset_code', 'Reset code expired or invalid.', [ 'status' => 400 ] );
+        if ( \is_wp_error( $user ) ) {
+            return new \WP_Error( 'invalid_key', 'The reset key is invalid or has expired.', [ 'status' => 400 ] );
         }
 
-        if ( \sanitize_text_field( $request['reset_code'] ) !== $stored_code ) {
-            return new \WP_Error( 'invalid_reset_code', 'Invalid reset code.', [ 'status' => 400 ] );
-        }
-
-        \wp_set_password( $request['new_password'], $user->ID );
-        \delete_user_meta( $user->ID, 'reset_code' );
-        \delete_user_meta( $user->ID, 'reset_code_expiration' );
+        // WordPress's own reset function — fires hooks that security plugins listen to
+        \reset_password( $user, $new_password );
 
         return [ 'status' => true, 'message' => 'Password updated successfully.' ];
     }
