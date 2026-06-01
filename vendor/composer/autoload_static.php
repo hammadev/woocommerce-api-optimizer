@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitab474fbb277a818b2cbad03af1872b84
+class ComposerStaticInit861a554d28c031fd32a589b7d69383fa
 {
     public static $files = array (
         'd92f49fe138fde4e7a3ec6f988960524' => __DIR__ . '/..' . '/stripe/stripe-php/lib/version_check.php',
@@ -108,6 +108,14 @@ class ComposerStaticInitab474fbb277a818b2cbad03af1872b84
         'Stripe\\Events\\V1BillingMeterErrorReportTriggeredEventNotification' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V1BillingMeterErrorReportTriggeredEventNotification.php',
         'Stripe\\Events\\V1BillingMeterNoMeterFoundEvent' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V1BillingMeterNoMeterFoundEvent.php',
         'Stripe\\Events\\V1BillingMeterNoMeterFoundEventNotification' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V1BillingMeterNoMeterFoundEventNotification.php',
+        'Stripe\\Events\\V2CommerceProductCatalogImportsFailedEvent' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V2CommerceProductCatalogImportsFailedEvent.php',
+        'Stripe\\Events\\V2CommerceProductCatalogImportsFailedEventNotification' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V2CommerceProductCatalogImportsFailedEventNotification.php',
+        'Stripe\\Events\\V2CommerceProductCatalogImportsProcessingEvent' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V2CommerceProductCatalogImportsProcessingEvent.php',
+        'Stripe\\Events\\V2CommerceProductCatalogImportsProcessingEventNotification' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V2CommerceProductCatalogImportsProcessingEventNotification.php',
+        'Stripe\\Events\\V2CommerceProductCatalogImportsSucceededEvent' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V2CommerceProductCatalogImportsSucceededEvent.php',
+        'Stripe\\Events\\V2CommerceProductCatalogImportsSucceededEventNotification' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V2CommerceProductCatalogImportsSucceededEventNotification.php',
+        'Stripe\\Events\\V2CommerceProductCatalogImportsSucceededWithErrorsEvent' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V2CommerceProductCatalogImportsSucceededWithErrorsEvent.php',
+        'Stripe\\Events\\V2CommerceProductCatalogImportsSucceededWithErrorsEventNotification' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V2CommerceProductCatalogImportsSucceededWithErrorsEventNotification.php',
         'Stripe\\Events\\V2CoreAccountClosedEvent' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V2CoreAccountClosedEvent.php',
         'Stripe\\Events\\V2CoreAccountClosedEventNotification' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V2CoreAccountClosedEventNotification.php',
         'Stripe\\Events\\V2CoreAccountCreatedEvent' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Events/V2CoreAccountCreatedEvent.php',
@@ -390,6 +398,9 @@ class ComposerStaticInitab474fbb277a818b2cbad03af1872b84
         'Stripe\\Service\\V2\\Billing\\MeterEventService' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Service/V2/Billing/MeterEventService.php',
         'Stripe\\Service\\V2\\Billing\\MeterEventSessionService' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Service/V2/Billing/MeterEventSessionService.php',
         'Stripe\\Service\\V2\\Billing\\MeterEventStreamService' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Service/V2/Billing/MeterEventStreamService.php',
+        'Stripe\\Service\\V2\\Commerce\\CommerceServiceFactory' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Service/V2/Commerce/CommerceServiceFactory.php',
+        'Stripe\\Service\\V2\\Commerce\\ProductCatalog\\ImportService' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Service/V2/Commerce/ProductCatalog/ImportService.php',
+        'Stripe\\Service\\V2\\Commerce\\ProductCatalog\\ProductCatalogServiceFactory' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Service/V2/Commerce/ProductCatalog/ProductCatalogServiceFactory.php',
         'Stripe\\Service\\V2\\Core\\AccountLinkService' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Service/V2/Core/AccountLinkService.php',
         'Stripe\\Service\\V2\\Core\\AccountService' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Service/V2/Core/AccountService.php',
         'Stripe\\Service\\V2\\Core\\AccountTokenService' => __DIR__ . '/..' . '/stripe/stripe-php/lib/Service/V2/Core/AccountTokenService.php',
@@ -465,6 +476,7 @@ class ComposerStaticInitab474fbb277a818b2cbad03af1872b84
         'Stripe\\V2\\Billing\\MeterEventAdjustment' => __DIR__ . '/..' . '/stripe/stripe-php/lib/V2/Billing/MeterEventAdjustment.php',
         'Stripe\\V2\\Billing\\MeterEventSession' => __DIR__ . '/..' . '/stripe/stripe-php/lib/V2/Billing/MeterEventSession.php',
         'Stripe\\V2\\Collection' => __DIR__ . '/..' . '/stripe/stripe-php/lib/V2/Collection.php',
+        'Stripe\\V2\\Commerce\\ProductCatalogImport' => __DIR__ . '/..' . '/stripe/stripe-php/lib/V2/Commerce/ProductCatalogImport.php',
         'Stripe\\V2\\Core\\Account' => __DIR__ . '/..' . '/stripe/stripe-php/lib/V2/Core/Account.php',
         'Stripe\\V2\\Core\\AccountLink' => __DIR__ . '/..' . '/stripe/stripe-php/lib/V2/Core/AccountLink.php',
         'Stripe\\V2\\Core\\AccountPerson' => __DIR__ . '/..' . '/stripe/stripe-php/lib/V2/Core/AccountPerson.php',
@@ -482,9 +494,9 @@ class ComposerStaticInitab474fbb277a818b2cbad03af1872b84
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitab474fbb277a818b2cbad03af1872b84::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitab474fbb277a818b2cbad03af1872b84::$prefixDirsPsr4;
-            $loader->classMap = ComposerStaticInitab474fbb277a818b2cbad03af1872b84::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit861a554d28c031fd32a589b7d69383fa::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit861a554d28c031fd32a589b7d69383fa::$prefixDirsPsr4;
+            $loader->classMap = ComposerStaticInit861a554d28c031fd32a589b7d69383fa::$classMap;
 
         }, null, ClassLoader::class);
     }
