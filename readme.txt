@@ -49,7 +49,8 @@ The plugin registers the following custom endpoints under the `shopmobi/v1` name
 
 **Store Information**
 
-* `GET /wp-json/shopmobi/v1/general-settings` — Country, currency, store location, and active payment gateways
+* `GET /wp-json/shopmobi/v1/general-settings` — Country, currency, and active payment gateways (public)
+* `GET /wp-json/shopmobi/v1/store-location` — Store address and location (requires login)
 * `GET /wp-json/shopmobi/v1/payment-gateways` — Available payment gateways
 
 **Payments**

@@ -14,7 +14,7 @@ class Stripe_Payment_Endpoint {
     }
 
     public function is_user_authenticated(): bool {
-        return \is_user_logged_in();
+        return \current_user_can( 'read' );
     }
 
     public function create_payment_intent( \WP_REST_Request $request ) {

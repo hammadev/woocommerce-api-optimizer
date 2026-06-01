@@ -6,20 +6,35 @@ defined( 'ABSPATH' ) || exit;
 class General_Settings_Endpoint {
 
     public function register_routes() {
+        // Public endpoint — returns only data visible to any store visitor
         \register_rest_route( 'shopmobi/v1', '/general-settings', [
             'methods'             => 'GET',
             'callback'            => [ $this, 'get_settings' ],
             'permission_callback' => '__return_true',
         ] );
+
+        // Authenticated endpoint — returns store address (requires login)
+        \register_rest_route( 'shopmobi/v1', '/store-location', [
+            'methods'             => 'GET',
+            'callback'            => [ $this, 'get_store_location_response' ],
+            'permission_callback' => [ $this, 'is_logged_in' ],
+        ] );
     }
 
-    public function get_settings( \WP_REST_Request $request ) {
+    public function is_logged_in(): bool {
+        return \current_user_can( 'read' );
+    }
+
+    public function get_settings( \WP_REST_Request $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
         return \rest_ensure_response( [
-            'country'        => $this->get_country(),
-            'currency'       => $this->get_currency(),
-            'store_location' => $this->get_store_location(),
-            'gateways'       => $this->get_active_gateways(),
+            'country'  => $this->get_country(),
+            'currency' => $this->get_currency(),
+            'gateways' => $this->get_active_gateways(),
         ] );
+    }
+
+    public function get_store_location_response( \WP_REST_Request $request ) { // phpcs:ignore VariableAnalysis.CodeAnalysis.VariableAnalysis.UnusedVariable
+        return \rest_ensure_response( $this->get_store_location() );
     }
 
     private function get_country(): array {

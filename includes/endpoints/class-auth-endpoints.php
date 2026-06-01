@@ -31,7 +31,7 @@ class Auth_Endpoints {
     }
 
     public function is_logged_in(): bool {
-        return \is_user_logged_in();
+        return \current_user_can( 'read' );
     }
 
     public function login( \WP_REST_Request $request ) {
