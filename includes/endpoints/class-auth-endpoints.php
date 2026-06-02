@@ -35,10 +35,16 @@ class Auth_Endpoints {
     }
 
     public function login( \WP_REST_Request $request ) {
-        $ip  = $this->get_client_ip();
-        $key = 'shopmobi_ao_login_attempts_' . md5( $ip );
+        $username = \sanitize_text_field( $request['username'] ?? '' );
 
-        if ( $this->is_rate_limited( $key, self::LOGIN_ATTEMPTS_LIMIT, self::LOGIN_LOCKOUT_SECONDS ) ) {
+        // Rate limit by username — cannot be spoofed unlike IP headers
+        $user_key = 'shopmobi_ao_login_user_' . md5( $username );
+
+        // Rate limit by server IP (REMOTE_ADDR only — cannot be set by the client)
+        $ip_key = 'shopmobi_ao_login_ip_' . md5( $this->get_remote_addr() );
+
+        if ( $this->is_rate_limited( $user_key, self::LOGIN_ATTEMPTS_LIMIT, self::LOGIN_LOCKOUT_SECONDS )
+            || $this->is_rate_limited( $ip_key, self::LOGIN_ATTEMPTS_LIMIT, self::LOGIN_LOCKOUT_SECONDS ) ) {
             return new \WP_Error(
                 'too_many_attempts',
                 'Too many login attempts. Please try again in 5 minutes.',
@@ -49,18 +55,19 @@ class Auth_Endpoints {
         // wp_signon() goes through the WordPress authenticate filter chain,
         // so security plugins (Wordfence, Limit Login Attempts, etc.) can intercept it.
         $user = \wp_signon( [
-            'user_login'    => \sanitize_text_field( $request['username'] ),
+            'user_login'    => $username,
             'user_password' => $request['password'],
             'remember'      => true,
         ], false );
 
         if ( \is_wp_error( $user ) ) {
-            $this->increment_rate_limit( $key, self::LOGIN_LOCKOUT_SECONDS );
+            $this->increment_rate_limit( $user_key, self::LOGIN_LOCKOUT_SECONDS );
+            $this->increment_rate_limit( $ip_key, self::LOGIN_LOCKOUT_SECONDS );
             return new \WP_Error( 'login_failed', \wp_strip_all_tags( $user->get_error_message() ), [ 'status' => 403 ] );
         }
 
-        // Successful login — clear the failed attempt counter
-        \delete_transient( $key );
+        \delete_transient( $user_key );
+        \delete_transient( $ip_key );
 
         return new \WP_REST_Response( [
             'user' => $user,
@@ -69,10 +76,10 @@ class Auth_Endpoints {
     }
 
     public function register( \WP_REST_Request $request ) {
-        $ip  = $this->get_client_ip();
-        $key = 'shopmobi_ao_register_attempts_' . md5( $ip );
+        // Rate limit by server IP only (REMOTE_ADDR — cannot be spoofed)
+        $ip_key = 'shopmobi_ao_register_ip_' . md5( $this->get_remote_addr() );
 
-        if ( $this->is_rate_limited( $key, self::REGISTER_LIMIT, self::REGISTER_WINDOW ) ) {
+        if ( $this->is_rate_limited( $ip_key, self::REGISTER_LIMIT, self::REGISTER_WINDOW ) ) {
             return new \WP_Error(
                 'too_many_attempts',
                 'Too many registration attempts. Please try again later.',
@@ -93,12 +100,11 @@ class Auth_Endpoints {
             return new \WP_Error( 409, 'An account with that username or email already exists.', [ 'status' => 409 ] );
         }
 
-        // wp_create_user() is WordPress core — it fires the register_new_user action
-        // and respects the registration_errors filter used by security plugins.
+        // wp_create_user() is WordPress core — respects the registration_errors filter.
         $user_id = \wp_create_user( $username, $password, $email );
         if ( \is_wp_error( $user_id ) ) return $user_id;
 
-        $this->increment_rate_limit( $key, self::REGISTER_WINDOW );
+        $this->increment_rate_limit( $ip_key, self::REGISTER_WINDOW );
 
         if ( ! empty( $name ) ) {
             $parts = explode( ' ', $name, 2 );
@@ -112,7 +118,7 @@ class Auth_Endpoints {
 
         return new \WP_REST_Response( [
             'code'    => 200,
-            'message' => "Registration successful.",
+            'message' => 'Registration successful.',
             'user'    => [
                 'user' => $user,
                 'meta' => $this->get_user_meta( $user_id ),
@@ -152,20 +158,11 @@ class Auth_Endpoints {
         ];
     }
 
-    private function get_client_ip(): string {
-        $headers = [
-            'HTTP_CF_CONNECTING_IP',
-            'HTTP_X_FORWARDED_FOR',
-            'HTTP_X_REAL_IP',
-            'REMOTE_ADDR',
-        ];
-        foreach ( $headers as $header ) {
-            if ( ! empty( $_SERVER[ $header ] ) ) {
-                $ip = explode( ',', sanitize_text_field( wp_unslash( $_SERVER[ $header ] ) ) );
-                return trim( $ip[0] );
-            }
-        }
-        return '0.0.0.0';
+    // Only REMOTE_ADDR — set by the web server, cannot be forged by the client.
+    private function get_remote_addr(): string {
+        return isset( $_SERVER['REMOTE_ADDR'] )
+            ? \sanitize_text_field( \wp_unslash( $_SERVER['REMOTE_ADDR'] ) )
+            : '0.0.0.0';
     }
 
     private function is_rate_limited( string $key, int $limit, int $window ): bool {
