@@ -44,8 +44,8 @@ The plugin registers the following custom endpoints under the `shopmobi/v1` name
 
 **Password Reset**
 
-* `POST /wp-json/shopmobi/v1/users/reset-password/generate` — Send a 4-digit reset code to the user's email
-* `POST /wp-json/shopmobi/v1/users/reset-password/verify` — Verify the reset code and set a new password
+* `POST /wp-json/shopmobi/v1/users/reset-password/generate` — Send a password reset link to the user's email (WordPress native flow)
+* `POST /wp-json/shopmobi/v1/users/reset-password/verify` — Verify the reset key and set a new password
 
 **Store Information**
 
@@ -160,7 +160,7 @@ No. WooCommerce must be installed and active. If WooCommerce is not detected, th
 This plugin stores data in your own WordPress database only:
 
 * **Stripe Customer IDs** (`stripe_cust_id` user meta) — created when a user makes a Stripe payment. Stored locally and shared only with Stripe to identify returning customers.
-* **Password Reset Codes** — a temporary 4-digit code and expiry timestamp stored in user meta. Both are deleted immediately after a successful password reset.
+* **Password Reset Keys** — handled entirely by WordPress core (`get_password_reset_key()` / `reset_password()`). No custom data is stored in user meta by this plugin.
 
 This plugin does not track users, send analytics, or transmit any personal data to ShopMobi or any third party, except for payment data sent directly to Stripe when the Stripe endpoint is used.
 
