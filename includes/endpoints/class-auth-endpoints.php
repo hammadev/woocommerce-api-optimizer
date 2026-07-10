@@ -36,6 +36,10 @@ class Auth_Endpoints {
 
     public function login( \WP_REST_Request $request ) {
         $username = \sanitize_text_field( $request['username'] ?? '' );
+        $password = $request['password'] ?? '';
+
+        if ( empty( $username ) ) return new \WP_Error( 'username_required', 'Username is required.', [ 'status' => 422 ] );
+        if ( empty( $password ) ) return new \WP_Error( 'password_required', 'Password is required.', [ 'status' => 422 ] );
 
         // Rate limit by username — cannot be spoofed unlike IP headers
         $user_key = 'shopmobi_ao_login_user_' . md5( $username );
@@ -56,7 +60,7 @@ class Auth_Endpoints {
         // so security plugins (Wordfence, Limit Login Attempts, etc.) can intercept it.
         $user = \wp_signon( [
             'user_login'    => $username,
-            'user_password' => $request['password'],
+            'user_password' => $password,
             'remember'      => true,
         ], false );
 
@@ -92,9 +96,9 @@ class Auth_Endpoints {
         $password = $request['password'] ?? '';
         $name     = \sanitize_text_field( $request['name'] ?? '' );
 
-        if ( empty( $username ) ) return new \WP_Error( 400, 'Username is required.', [ 'status' => 400 ] );
-        if ( empty( $email ) )    return new \WP_Error( 400, 'Email is required.', [ 'status' => 400 ] );
-        if ( empty( $password ) ) return new \WP_Error( 400, 'Password is required.', [ 'status' => 400 ] );
+        if ( empty( $username ) ) return new \WP_Error( 'username_required', 'Username is required.', [ 'status' => 422 ] );
+        if ( empty( $email ) )    return new \WP_Error( 'email_required', 'Email is required.', [ 'status' => 422 ] );
+        if ( empty( $password ) ) return new \WP_Error( 'password_required', 'Password is required.', [ 'status' => 422 ] );
 
         if ( \username_exists( $username ) || \email_exists( $email ) ) {
             return new \WP_Error( 409, 'An account with that username or email already exists.', [ 'status' => 409 ] );
@@ -132,9 +136,9 @@ class Auth_Endpoints {
         $last_name  = \sanitize_text_field( $request['last_name'] ?? '' );
         $user_phone = \sanitize_text_field( $request['user_phone'] ?? '' );
 
-        if ( empty( $first_name ) ) return new \WP_Error( 400, 'First name is required.', [ 'status' => 400 ] );
-        if ( empty( $last_name ) )  return new \WP_Error( 400, 'Last name is required.', [ 'status' => 400 ] );
-        if ( empty( $user_phone ) ) return new \WP_Error( 400, 'Phone is required.', [ 'status' => 400 ] );
+        if ( empty( $first_name ) ) return new \WP_Error( 'first_name_required', 'First name is required.', [ 'status' => 422 ] );
+        if ( empty( $last_name ) )  return new \WP_Error( 'last_name_required', 'Last name is required.', [ 'status' => 422 ] );
+        if ( empty( $user_phone ) ) return new \WP_Error( 'user_phone_required', 'Phone is required.', [ 'status' => 422 ] );
 
         \update_user_meta( $user_id, 'first_name', $first_name );
         \update_user_meta( $user_id, 'last_name',  $last_name );
