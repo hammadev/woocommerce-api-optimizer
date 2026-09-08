@@ -1,6 +1,6 @@
 === ShopMobi – API Optimizer for WooCommerce ===
 Contributors: hammadev2
-Tags: woocommerce, rest-api, api, performance, mobile
+Tags: woocommerce, rest-api, spa, headless, mobile-app, api, performance, mobile
 Requires at least: 5.8
 Tested up to: 7.0
 Stable tag: 1.0.0
@@ -9,30 +9,39 @@ Requires Plugins: woocommerce
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-ShopMobi reduces WooCommerce REST API response size with field filtering and adds ready-made endpoints for auth, Stripe payments, and store settings.
+The all-in-one WooCommerce REST API layer for SPA and mobile app developers: field filtering plus ready-made auth, password reset, store settings, and Stripe payment endpoints.
 
 == Description ==
 
-Stop receiving 50+ fields when your app needs 3. ShopMobi – API Optimizer for WooCommerce gives your store GraphQL-like flexibility over REST — plus login, password reset, and Stripe payments out of the box.
+Building an SPA or mobile app on WooCommerce? Stop receiving 50+ fields when your screen needs 3 — and stop stitching together a JWT plugin, a filtering snippet, and a Stripe integration to get there. ShopMobi is a full-stop, all-in-one WooCommerce REST API layer built for developers creating **single-page apps, Flutter apps, React Native apps, or any headless WooCommerce frontend**.
 
-Built for developers creating mobile apps, Flutter apps, React Native apps, or any headless WooCommerce frontend.
+This plugin ships two things, each fully documented in its own section below:
 
-This plugin ships two independent things, each fully documented below:
+1. **Field Filtering** — a response-shaping layer on top of the *existing* WooCommerce `wc/v3` endpoints (products, variations, orders, customers). No new routes — you keep calling the standard WooCommerce REST API and opt into smaller responses. See **Field Filtering** below.
+2. **Custom Endpoints** — new routes under the `shopmobi/v1` namespace for auth, password reset, store settings, and Stripe payments. See **Custom Endpoints** below.
 
-1. **Custom REST Endpoints** — new routes under the `shopmobi/v1` namespace for auth, password reset, store settings, and Stripe payments. See **Custom API Reference**.
-2. **Field Filtering** — a response-shaping layer on top of the *existing* WooCommerce `wc/v3` endpoints (products, variations, orders, customers). No new routes — you keep calling the standard WooCommerce REST API and opt into smaller responses. See **Field Filtering Reference**.
+= At a Glance =
 
-= Product Variation Enhancement =
+`GET /wp-json/wc/v3/products/101?fields=id,name,price` — same endpoint, same credentials, one query param added.
 
-Variation responses are enriched automatically. Raw variation IDs in product responses are replaced with full objects including:
+| | Default WooCommerce | With ShopMobi |
+|---|---|---|
+| Fields returned per product | 66 | exactly what you asked for |
+| Payload, one product | ~2.8 KB | ~130 B (**-95%**) |
+| New endpoints to learn | — | none — same `wc/v3` route |
 
-* Pricing (regular price, sale price, on_sale flag)
-* SKU and stock quantity
-* Stock status
-* Attributes with labels and slugs
-* Variation image URL
+Full breakdown with real JSON in **Field Filtering** below.
 
-This runs before field filtering, so requesting the `variations` field returns the enhanced objects, not raw IDs.
+= Why ShopMobi? =
+
+Every field WooCommerce's REST API returns is a field your app has to receive, parse, store, and — on a mobile connection — pay for in bytes and battery. ShopMobi removes that tax without asking you to change how you talk to WooCommerce:
+
+* **One plugin instead of three.** A headless WooCommerce frontend usually needs a JWT/auth plugin, hand-written response-filtering code, and a separate Stripe integration, bolted together and kept in sync. ShopMobi ships all of it as one tested package.
+* **Purpose-built for SPA and mobile clients.** Flutter, React Native, and native apps pay for every extra byte in load time, memory, and mobile data. A product screen that needs 4 fields shouldn't ship 60+.
+* **GraphQL-like control without leaving REST.** Pick exactly the fields you want, per request — no schema, no query language, no separate server to run.
+* **Auth, password reset, and Stripe payments included.** Login, registration, profile updates, password reset, and Stripe `PaymentIntent`/`EphemeralKey` creation ship ready-made, so you don't build and secure them yourself.
+
+More on how it works and what it costs to adopt: **Field Filtering** below and the **Frequently Asked Questions** section.
 
 = Third-Party Services =
 
@@ -45,13 +54,223 @@ When the `/shopmobi/v1/stripe-payment` endpoint is called, payment data (amount,
 
 Your Stripe API keys are stored in your WordPress database and are never shared with the plugin author.
 
-== Custom API Reference ==
+== Field Filtering ==
+
+Field filtering applies **on top of** the standard WooCommerce REST API — there are no new routes. You call the same `wc/v3` endpoints you already use, authenticated the same way (consumer key/secret or OAuth1.0a), and opt into a smaller response per request. This is the layer that lets your SPA or mobile app request exactly the shape it renders, instead of parsing and discarding the rest.
+
+= Quick Reference =
+
+| Method | Include fields | Exclude fields |
+|--------|----------------|----------------|
+| Header | `X-WC-Fields: id,name,price` | `X-WC-Except: meta_data` |
+| Query param | `?fields=id,name,price` | `?except_fields=meta_data` |
+
+Header takes priority when both are present.
+
+= How It Works =
+
+1. Your app calls a standard `wc/v3` endpoint exactly as it does today — same URL, same auth.
+2. You add either an **include list** (`fields` / `X-WC-Fields`) naming the fields you want, or an **exclude list** (`except_fields` / `X-WC-Except`) naming the fields you don't. Both are comma-separated field names.
+3. WooCommerce builds its normal, full response object first — every hook, capability check, and sanitization rule runs exactly as it would without ShopMobi installed.
+4. Right before the response is sent, ShopMobi reads your list and keeps (or drops) the matching **top-level keys** of the response — e.g. `id`, `name`, `price`, `images`. Nested data such as `images` or `variations` comes back as WooCommerce built it when you request that field; ShopMobi doesn't reach inside it.
+5. This runs per resource, so a collection endpoint (a product list) is filtered the same way as a single-resource endpoint (one product) — every item in the list comes back with the same trimmed shape.
+6. If both an include and an exclude parameter are sent, **both apply**: the response is trimmed to the include list first, then any excluded keys are removed from what's left — so an excluded field never comes back even if it was also in the include list. If both a header and a query parameter are sent for the same direction, the **header wins**.
+7. If you use `fields` / `X-WC-Fields`, only the fields you list are returned — remember to include `id` explicitly if your client needs it, it isn't added automatically.
+
+The endpoint, the auth, and the field names on the wire are identical either way — you're just choosing how many of them come back.
+
+= Product Variation Enhancement =
+
+Variation responses are enriched automatically. Raw variation IDs in product responses are replaced with full objects including:
+
+* Pricing (regular price, sale price, on_sale flag)
+* SKU and stock quantity
+* Stock status
+* Attributes with labels and slugs
+* Variation image URL
+
+This runs before field filtering, so requesting the `variations` field returns the enhanced objects, not raw IDs — the shape a product page actually renders, not a list of IDs that costs one extra request each to resolve. See it in context in Example 2 below.
+
+= With vs. Without ShopMobi =
+
+Same request, same endpoint, same credentials — `GET /wp-json/wc/v3/products/101`. The only difference is one query string.
+
+**Without ShopMobi** (standard WooCommerce, unfiltered — abridged here, the real response has 66 top-level fields):
+
+```json
+{
+  "id": 101,
+  "name": "Classic T-Shirt",
+  "slug": "classic-t-shirt",
+  "permalink": "https://example.com/product/classic-t-shirt/",
+  "date_created": "2025-01-14T10:22:03",
+  "type": "variable",
+  "status": "publish",
+  "description": "<p>A soft, breathable cotton t-shirt...</p>",
+  "sku": "TSHIRT-CLASSIC",
+  "price": "24.00",
+  "regular_price": "28.00",
+  "sale_price": "24.00",
+  "price_html": "<del>...</del> <ins>...</ins>",
+  "on_sale": true,
+  "purchasable": true,
+  "total_sales": 342,
+  "tax_status": "taxable",
+  "manage_stock": true,
+  "stock_quantity": 118,
+  "stock_status": "instock",
+  "weight": "0.2",
+  "dimensions": { "length": "28", "width": "20", "height": "2" },
+  "average_rating": "4.60",
+  "rating_count": 87,
+  "related_ids": [102, 118, 145, 201, 233],
+  "categories": [{ "id": 15, "name": "Apparel", "slug": "apparel" }],
+  "tags": [{ "id": 40, "name": "cotton", "slug": "cotton" }],
+  "images": [{ "id": 55, "src": "https://example.com/wp-content/uploads/tshirt.jpg" }],
+  "attributes": [{ "id": 1, "name": "Color", "options": ["Blue", "Black", "White"] }],
+  "variations": [102, 103, 104, 105, 106, 107, 108, 109, 110, 111, 112],
+  "meta_data": [
+    { "id": 501, "key": "_yoast_wpseo_title", "value": "Classic T-Shirt | Example Store" },
+    { "id": 503, "key": "_product_source", "value": "manual-import" }
+  ],
+  "_links": { "self": [{ "href": "https://example.com/wp-json/wc/v3/products/101" }] }
+}
+```
+
+**With ShopMobi** — `?fields=id,name,price,images` added to the same call:
+
+```json
+{
+  "id": 101,
+  "name": "Classic T-Shirt",
+  "price": "24.00",
+  "images": [{ "id": 55, "src": "https://example.com/wp-content/uploads/tshirt.jpg" }]
+}
+```
+
+| | Without ShopMobi | With ShopMobi | Change |
+|---|---|---|---|
+| Top-level fields | 66 | 4 | -94% |
+| Payload for one product (minified) | ~2.8 KB | ~130 B | **-95%** |
+| Payload for a 20-product listing screen | ~56 KB | ~2.5 KB | **-95%** |
+
+Same endpoint. Same authentication. Same field names and types on the wire. The only thing that changes is how much of the response you asked for — multiply that across every list screen, pull-to-refresh, and background sync in your app and the savings compound fast.
+
+= Supported Endpoints =
+
+| Endpoint | Filtered on |
+|---|---|
+| `GET/POST /wc/v3/products`, `GET/PUT/DELETE /wc/v3/products/{id}` | Product object |
+| `GET /wc/v3/products/{product_id}/variations`, `.../variations/{id}` | Product variation object |
+| `GET/POST /wc/v3/orders`, `GET/PUT/DELETE /wc/v3/orders/{id}` | Order object |
+| `GET /wc/v3/orders/{order_id}/refunds`, `.../refunds/{id}` | Order refund object |
+| `GET/POST /wc/v3/customers`, `GET/PUT/DELETE /wc/v3/customers/{id}` | Customer object |
+
+= Examples =
+
+**Example 1 — Only the fields a product list screen needs**
+
+```bash
+curl "https://example.com/wp-json/wc/v3/products?fields=id,name,price,images" \
+  -u consumer_key:consumer_secret
+```
+
+Response (every item in the array is trimmed the same way):
+
+```json
+[
+  {
+    "id": 101,
+    "name": "Classic T-Shirt",
+    "price": "24.00",
+    "images": [{ "id": 55, "src": "https://example.com/wp-content/uploads/tshirt.jpg" }]
+  }
+]
+```
+
+Without filtering, the same request returns 50+ fields per product (descriptions, tax data, dimensions, all meta, `_links`, etc.).
+
+**Example 2 — Header form, single product, with enhanced variations**
+
+```bash
+curl https://example.com/wp-json/wc/v3/products/101 \
+  -u consumer_key:consumer_secret \
+  -H "X-WC-Fields: id,name,price,variations"
+```
+
+Because the variation enhancer runs before field filtering, `variations` here returns full variation objects (SKU, pricing, stock, attributes, image) instead of raw IDs:
+
+```json
+{
+  "id": 101,
+  "name": "Classic T-Shirt",
+  "price": "24.00",
+  "variations": [
+    {
+      "id": 102,
+      "sku": "TSHIRT-BLU-M",
+      "on_sale": false,
+      "regular_price": 24.0,
+      "sale_price": 0,
+      "quantity": 18,
+      "stock_status": "instock",
+      "attributes": [{ "name": "Color", "slug": "color", "option": "blue" }],
+      "image": "https://example.com/wp-content/uploads/tshirt-blue.jpg"
+    }
+  ]
+}
+```
+
+**Example 3 — Exclude heavy fields instead of allow-listing**
+
+```bash
+curl "https://example.com/wp-json/wc/v3/orders?except_fields=meta_data,_links,tax_lines" \
+  -u consumer_key:consumer_secret
+```
+
+Every field WooCommerce normally returns for an order is included **except** `meta_data`, `_links`, and `tax_lines`.
+
+**Example 4 — Customers, header exclude form**
+
+```bash
+curl https://example.com/wp-json/wc/v3/customers/12 \
+  -u consumer_key:consumer_secret \
+  -H "X-WC-Except: meta_data,_links,billing,shipping"
+```
+
+**Example 5 — Header takes priority over query parameter**
+
+```bash
+curl "https://example.com/wp-json/wc/v3/products?fields=id,name,description,short_description,type,status" \
+  -u consumer_key:consumer_secret \
+  -H "X-WC-Fields: id,price"
+```
+
+Only `id` and `price` are returned — the `fields` query parameter is ignored because `X-WC-Fields` was also sent.
+
+== Custom Endpoints ==
+
+All custom endpoints are registered under the `shopmobi/v1` namespace — the auth, profile, password reset, store info, and payment routes an SPA or mobile app needs, built and secured for you, so you don't need a second plugin alongside ShopMobi to cover them.
 
 All custom endpoints live under this base URL:
 
 `https://your-site.com/wp-json/shopmobi/v1`
 
-= Authentication model =
+= Quick Reference =
+
+| Method | Endpoint | Auth required | Description |
+|--------|----------|---------------|-------------|
+| POST | `/users/login` | No | Cookie-based login |
+| POST | `/users/register` | No | Customer registration |
+| POST | `/users/update-profile` | Yes | Update name and phone |
+| POST | `/users/reset-password/generate` | No | Email a password reset key |
+| POST | `/users/reset-password/verify` | No | Verify key and set new password |
+| GET  | `/general-settings` | No | Country, currency, active gateways |
+| GET  | `/store-location` | Yes | Store address |
+| GET  | `/payment-gateways` | No | Active payment gateways |
+| POST | `/stripe-payment` | Yes | Create Stripe PaymentIntent + EphemeralKey |
+
+= Authentication Model =
 
 * **Public** endpoints need no authentication.
 * **Requires login** endpoints check `current_user_can( 'read' )` — the request must carry a valid WordPress session. Use one of:
@@ -331,109 +550,6 @@ Errors:
 
 > **Note:** exceptions raised by the Stripe SDK itself (declined card setup issues, invalid API key, network errors, etc.) are not currently caught, so a failed Stripe API call surfaces as a generic REST `500` error rather than a structured Stripe error payload.
 
-== Field Filtering Reference ==
-
-Field filtering applies **on top of** the standard WooCommerce REST API — there are no new routes. You call the same `wc/v3` endpoints you already use, authenticated the same way (consumer key/secret or OAuth1.0a), and opt into a smaller response per request.
-
-= How it works =
-
-* **Include only these fields** — header `X-WC-Fields` or query param `fields`, comma-separated.
-* **Exclude these fields** — header `X-WC-Except` or query param `except_fields`, comma-separated.
-* If both a header and a query parameter are sent, the **header wins** and the query parameter is ignored for that request.
-* Filtering runs after WooCommerce builds the full response object, so all existing WooCommerce hooks, capability checks, and data sanitization still apply — this only trims the final payload.
-* Filtering is applied per-resource, so it works the same on collection endpoints (e.g. a list of products) and single-resource endpoints (e.g. one product).
-* If you use `fields`/`X-WC-Fields`, only the fields you list are returned — remember to include `id` explicitly if your client needs it.
-
-= Supported endpoints =
-
-| Endpoint | Filtered on |
-|---|---|
-| `GET/POST /wc/v3/products`, `GET/PUT/DELETE /wc/v3/products/{id}` | Product object |
-| `GET /wc/v3/products/{product_id}/variations`, `.../variations/{id}` | Product variation object |
-| `GET/POST /wc/v3/orders`, `GET/PUT/DELETE /wc/v3/orders/{id}` | Order object |
-| `GET /wc/v3/orders/{order_id}/refunds`, `.../refunds/{id}` | Order refund object |
-| `GET/POST /wc/v3/customers`, `GET/PUT/DELETE /wc/v3/customers/{id}` | Customer object |
-
-= Example 1 — Only the fields a product list screen needs =
-
-```bash
-curl "https://example.com/wp-json/wc/v3/products?fields=id,name,price,images" \
-  -u consumer_key:consumer_secret
-```
-
-Response (every item in the array is trimmed the same way):
-
-```json
-[
-  {
-    "id": 101,
-    "name": "Classic T-Shirt",
-    "price": "24.00",
-    "images": [{ "id": 55, "src": "https://example.com/wp-content/uploads/tshirt.jpg" }]
-  }
-]
-```
-
-Without filtering, the same request returns 50+ fields per product (descriptions, tax data, dimensions, all meta, `_links`, etc.).
-
-= Example 2 — Header form, single product =
-
-```bash
-curl https://example.com/wp-json/wc/v3/products/101 \
-  -u consumer_key:consumer_secret \
-  -H "X-WC-Fields: id,name,price,variations"
-```
-
-Because the variation enhancer runs before field filtering, `variations` here returns full variation objects (SKU, pricing, stock, attributes, image) instead of raw IDs:
-
-```json
-{
-  "id": 101,
-  "name": "Classic T-Shirt",
-  "price": "24.00",
-  "variations": [
-    {
-      "id": 102,
-      "sku": "TSHIRT-BLU-M",
-      "on_sale": false,
-      "regular_price": 24.0,
-      "sale_price": 0,
-      "quantity": 18,
-      "stock_status": "instock",
-      "attributes": [{ "name": "Color", "slug": "color", "option": "blue" }],
-      "image": "https://example.com/wp-content/uploads/tshirt-blue.jpg"
-    }
-  ]
-}
-```
-
-= Example 3 — Exclude heavy fields instead of allow-listing =
-
-```bash
-curl "https://example.com/wp-json/wc/v3/orders?except_fields=meta_data,_links,tax_lines" \
-  -u consumer_key:consumer_secret
-```
-
-Every field WooCommerce normally returns for an order is included **except** `meta_data`, `_links`, and `tax_lines`.
-
-= Example 4 — Customers, header exclude form =
-
-```bash
-curl https://example.com/wp-json/wc/v3/customers/12 \
-  -u consumer_key:consumer_secret \
-  -H "X-WC-Except: meta_data,_links,billing,shipping"
-```
-
-= Example 5 — Header takes priority over query parameter =
-
-```bash
-curl "https://example.com/wp-json/wc/v3/products?fields=id,name,description,short_description,type,status" \
-  -u consumer_key:consumer_secret \
-  -H "X-WC-Fields: id,price"
-```
-
-Only `id` and `price` are returned — the `fields` query parameter is ignored because `X-WC-Fields` was also sent.
-
 == Installation ==
 
 = Standard Installation (Recommended) =
@@ -463,7 +579,11 @@ The full WooCommerce response is built internally before filtering is applied, s
 
 = Does this replace the WooCommerce REST API? =
 
-No. This plugin adds a filtering layer on top of the standard WooCommerce REST API, and adds separate custom endpoints under `shopmobi/v1` alongside it. All existing WooCommerce authentication, permissions, and hooks still apply. See **Custom API Reference** and **Field Filtering Reference** above for full details.
+No. This plugin adds a filtering layer on top of the standard WooCommerce REST API, and adds separate custom endpoints under `shopmobi/v1` alongside it. All existing WooCommerce authentication, permissions, and hooks still apply. See **Field Filtering** and **Custom Endpoints** above for full details.
+
+= What happens if I stop using field filtering — is there anything to migrate? =
+
+Nothing. Filtering only runs when a request includes `fields`/`X-WC-Fields` or `except_fields`/`X-WC-Except`. Stop sending those and every endpoint returns WooCommerce's normal, full response — nothing to roll back or reconfigure.
 
 = Can I use both a header and a query parameter at the same time? =
 
