@@ -4,3 +4,6 @@
 .distignore
 composer.json
 composer.lock
+/assets
+/design
+/skills

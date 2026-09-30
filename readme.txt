@@ -9,7 +9,7 @@ Requires Plugins: woocommerce
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-The all-in-one WooCommerce REST API layer for SPA and mobile app developers: field filtering plus ready-made auth, password reset, store settings, and Stripe payment endpoints.
+Is your WooCommerce API slowing your app? Cut REST payloads up to 90% with field filtering, plus ready-made auth, password reset & Stripe endpoints.
 
 == Description ==
 

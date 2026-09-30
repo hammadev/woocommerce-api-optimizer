@@ -1,0 +1,100 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1544 500" width="100%" height="100%">
+  <defs>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;800&amp;family=JetBrains+Mono:wght@500;700&amp;display=block');
+      .sans { font-family: Inter, -apple-system, 'Helvetica Neue', Arial, sans-serif; }
+      .mono { font-family: 'JetBrains Mono', Menlo, Consolas, monospace; }
+    </style>
+
+    <!-- Background glows -->
+    <radialGradient id="glowR" cx="1150" cy="250" r="620" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E1F5EE"/>
+      <stop offset="0.55" stop-color="#E1F5EE" stop-opacity="0.45"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="glowL" cx="0" cy="0" r="520" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#E1F5EE" stop-opacity="0.8"/>
+      <stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/>
+    </radialGradient>
+
+    <!-- Dot grid, faded toward the left -->
+    <pattern id="dots" width="24" height="24" patternUnits="userSpaceOnUse">
+      <circle cx="2" cy="2" r="1.6" fill="#1D9E75" fill-opacity="0.22"/>
+    </pattern>
+    <linearGradient id="fadeGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0.35" stop-color="#000"/>
+      <stop offset="0.75" stop-color="#FFF"/>
+      <stop offset="1" stop-color="#FFF"/>
+    </linearGradient>
+    <mask id="fade"><rect width="1544" height="500" fill="url(#fadeGrad)"/></mask>
+
+    <!-- Bars -->
+    <linearGradient id="barGreen" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#26B386"/>
+      <stop offset="1" stop-color="#1D9E75"/>
+    </linearGradient>
+
+    <filter id="cardShadow" x="-20%" y="-20%" width="140%" height="150%">
+      <feDropShadow dx="0" dy="24" stdDeviation="28" flood-color="#0F6E56" flood-opacity="0.14"/>
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#101828" flood-opacity="0.06"/>
+    </filter>
+    <filter id="pillShadow" x="-30%" y="-50%" width="160%" height="220%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#1D9E75" flood-opacity="0.35"/>
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="1544" height="500" fill="#FFFFFF"/>
+  <rect width="1544" height="500" fill="url(#glowR)"/>
+  <rect width="1544" height="500" fill="url(#glowL)"/>
+  <rect width="1544" height="500" fill="url(#dots)" mask="url(#fade)"/>
+
+  <!-- ===== Left: brand + message ===== -->
+  <g transform="translate(96 78)">
+    <image href="icon.svg" width="56" height="56"/>
+    <!-- Outlined wordmark (Inter 800, 26px) with green i-dot -->
+    <path d="M82.77 26.25L82.77 26.25Q80.41 26.25 78.66 25.54Q76.91 24.83 75.93 23.38Q74.95 21.94 74.91 19.75L74.91 19.75L79.22 19.75Q79.28 20.67 79.72 21.29Q80.16 21.91 80.93 22.22Q81.69 22.53 82.72 22.53L82.72 22.53Q83.65 22.53 84.32 22.28Q84.99 22.03 85.36 21.57Q85.72 21.11 85.72 20.50L85.72 20.50Q85.72 19.96 85.38 19.58Q85.04 19.20 84.37 18.90Q83.70 18.61 82.66 18.38L82.66 18.38L80.65 17.91Q78.20 17.35 76.81 16.08Q75.41 14.82 75.41 12.68L75.41 12.68Q75.41 10.93 76.36 9.61Q77.31 8.29 78.97 7.56Q80.63 6.83 82.77 6.83L82.77 6.83Q84.97 6.83 86.58 7.57Q88.19 8.32 89.08 9.64Q89.97 10.97 90.00 12.72L90.00 12.72L85.69 12.72Q85.60 11.69 84.85 11.12Q84.11 10.55 82.76 10.55L82.76 10.55Q81.87 10.55 81.26 10.78Q80.65 11.02 80.35 11.43Q80.04 11.84 80.04 12.38L80.04 12.38Q80.04 12.96 80.39 13.36Q80.73 13.76 81.36 14.03Q82.00 14.29 82.84 14.49L82.84 14.49L84.47 14.87Q85.84 15.16 86.92 15.66Q87.99 16.16 88.73 16.86Q89.48 17.56 89.86 18.47Q90.25 19.39 90.25 20.52L90.25 20.52Q90.25 22.31 89.35 23.59Q88.46 24.88 86.79 25.57Q85.12 26.25 82.77 26.25ZM96.14 17.90L96.14 17.90L96.14 26L91.71 26L91.71 7.08L96.06 7.08L96.06 15.39L95.78 15.39Q96.30 13.70 97.41 12.66Q98.52 11.63 100.40 11.63L100.40 11.63Q101.88 11.63 102.99 12.29Q104.09 12.95 104.70 14.16Q105.31 15.36 105.31 16.96L105.31 16.96L105.31 26L100.88 26L100.88 17.82Q100.88 16.63 100.27 15.95Q99.66 15.27 98.57 15.27L98.57 15.27Q97.86 15.27 97.31 15.58Q96.75 15.89 96.45 16.48Q96.14 17.06 96.14 17.90ZM113.91 26.27L113.91 26.27Q111.69 26.27 110.09 25.35Q108.49 24.43 107.63 22.78Q106.77 21.14 106.77 18.95L106.77 18.95Q106.77 16.76 107.63 15.11Q108.49 13.47 110.09 12.55Q111.69 11.63 113.91 11.63L113.91 11.63Q116.13 11.63 117.73 12.55Q119.33 13.47 120.18 15.11Q121.03 16.76 121.03 18.95L121.03 18.95Q121.03 21.14 120.18 22.78Q119.33 24.43 117.73 25.35Q116.13 26.27 113.91 26.27ZM113.91 22.88L113.91 22.88Q114.76 22.88 115.34 22.38Q115.93 21.89 116.23 21.00Q116.52 20.11 116.52 18.93L116.52 18.93Q116.52 17.75 116.23 16.87Q115.93 15.98 115.34 15.50Q114.76 15.02 113.91 15.02L113.91 15.02Q113.06 15.02 112.47 15.50Q111.89 15.98 111.59 16.87Q111.29 17.75 111.29 18.93L111.29 18.93Q111.29 20.11 111.59 21.00Q111.89 21.89 112.47 22.38Q113.06 22.88 113.91 22.88ZM126.94 31.31L122.51 31.31L122.51 11.81L126.89 11.81L126.89 14.24L127.04 14.24Q127.31 13.60 127.82 13Q128.34 12.40 129.13 12.02Q129.92 11.63 131.05 11.63L131.05 11.63Q132.55 11.63 133.84 12.41Q135.13 13.19 135.92 14.81Q136.71 16.43 136.71 18.92L136.71 18.92Q136.71 21.33 135.95 22.95Q135.19 24.57 133.90 25.38Q132.60 26.20 131.03 26.20L131.03 26.20Q129.95 26.20 129.15 25.84Q128.36 25.48 127.84 24.91Q127.32 24.34 127.04 23.70L127.04 23.70L126.94 23.70L126.94 31.31ZM129.52 22.75L129.52 22.75Q130.37 22.75 130.96 22.27Q131.55 21.80 131.85 20.93Q132.16 20.06 132.16 18.92L132.16 18.92Q132.16 17.76 131.85 16.90Q131.55 16.05 130.96 15.57Q130.38 15.09 129.52 15.09L129.52 15.09Q128.67 15.09 128.07 15.56Q127.47 16.02 127.15 16.88Q126.84 17.74 126.84 18.92L126.84 18.92Q126.84 20.07 127.15 20.93Q127.47 21.80 128.08 22.27Q128.68 22.75 129.52 22.75ZM142.69 26L138.19 26L138.19 7.08L145.17 7.08L147.59 14.45Q147.79 15.12 148.05 16.23Q148.31 17.34 148.58 18.61Q148.84 19.88 149.06 21.06Q149.29 22.24 149.43 23.09L149.43 23.09L148.58 23.09Q148.72 22.25 148.94 21.07Q149.16 19.89 149.42 18.62Q149.68 17.34 149.94 16.24Q150.20 15.13 150.40 14.45L150.40 14.45L152.78 7.08L159.77 7.08L159.77 26L155.27 26L155.27 17.85Q155.27 17.21 155.29 16.22Q155.32 15.22 155.35 14.05Q155.38 12.89 155.41 11.70Q155.44 10.51 155.44 9.48L155.44 9.48L155.71 9.48Q155.48 10.61 155.18 11.82Q154.89 13.03 154.59 14.17Q154.29 15.31 154.02 16.26Q153.74 17.21 153.55 17.85L153.55 17.85L150.86 26L147.12 26L144.39 17.85Q144.20 17.23 143.92 16.28Q143.64 15.32 143.33 14.18Q143.03 13.04 142.72 11.83Q142.42 10.63 142.16 9.48L142.16 9.48L142.49 9.48Q142.51 10.49 142.53 11.67Q142.56 12.85 142.59 14.03Q142.62 15.21 142.65 16.21Q142.69 17.20 142.69 17.85L142.69 17.85L142.69 26ZM168.38 26.27L168.38 26.27Q166.16 26.27 164.56 25.35Q162.96 24.43 162.11 22.78Q161.25 21.14 161.25 18.95L161.25 18.95Q161.25 16.76 162.11 15.11Q162.96 13.47 164.56 12.55Q166.16 11.63 168.38 11.63L168.38 11.63Q170.61 11.63 172.21 12.55Q173.81 13.47 174.66 15.11Q175.51 16.76 175.51 18.95L175.51 18.95Q175.51 21.14 174.66 22.78Q173.81 24.43 172.21 25.35Q170.61 26.27 168.38 26.27ZM168.38 22.88L168.38 22.88Q169.24 22.88 169.82 22.38Q170.40 21.89 170.70 21.00Q171.00 20.11 171.00 18.93L171.00 18.93Q171.00 17.75 170.70 16.87Q170.40 15.98 169.82 15.50Q169.24 15.02 168.38 15.02L168.38 15.02Q167.53 15.02 166.95 15.50Q166.37 15.98 166.07 16.87Q165.77 17.75 165.77 18.93L165.77 18.93Q165.77 20.11 166.07 21.00Q166.37 21.89 166.95 22.38Q167.53 22.88 168.38 22.88ZM185.50 26.20L185.50 26.20Q184.42 26.20 183.63 25.84Q182.84 25.48 182.32 24.91Q181.79 24.34 181.52 23.70L181.52 23.70L181.36 23.70L181.36 26L176.98 26L176.98 7.08L181.41 7.08L181.41 14.24L181.52 14.24Q181.78 13.60 182.30 13Q182.81 12.40 183.60 12.02Q184.40 11.63 185.53 11.63L185.53 11.63Q187.03 11.63 188.31 12.41Q189.60 13.19 190.40 14.81Q191.19 16.43 191.19 18.92L191.19 18.92Q191.19 21.33 190.43 22.95Q189.67 24.57 188.37 25.38Q187.08 26.20 185.50 26.20ZM183.99 22.75L183.99 22.75Q184.84 22.75 185.43 22.27Q186.02 21.80 186.33 20.93Q186.63 20.06 186.63 18.92L186.63 18.92Q186.63 17.76 186.33 16.90Q186.02 16.05 185.44 15.57Q184.85 15.09 183.99 15.09L183.99 15.09Q183.14 15.09 182.54 15.56Q181.95 16.02 181.63 16.88Q181.31 17.74 181.31 18.92L181.31 18.92Q181.31 20.07 181.63 20.93Q181.95 21.80 182.55 22.27Q183.15 22.75 183.99 22.75ZM197.08 26L192.65 26L192.65 11.81L197.08 11.81L197.08 26Z" fill="#101828"/>
+    <path d="M194.86 10.14L194.86 10.14Q193.92 10.14 193.25 9.52Q192.58 8.89 192.58 8.01L192.58 8.01Q192.58 7.12 193.25 6.50Q193.92 5.88 194.86 5.88L194.86 5.88Q195.81 5.88 196.49 6.49Q197.16 7.11 197.16 8.01L197.16 8.01Q197.16 8.90 196.49 9.52Q195.81 10.14 194.86 10.14Z" fill="#1D9E75"/>
+    <text x="74" y="50" class="sans" font-size="17" font-weight="500" fill="#6A7282">WooCommerce API Optimizer</text>
+  </g>
+
+  <text x="93" y="250" class="sans" font-size="56" font-weight="800" fill="#101828" letter-spacing="-1.8">Your WooCommerce API</text>
+  <text x="93" y="314" class="sans" font-size="56" font-weight="800" fill="#1D9E75" letter-spacing="-1.8">is slowing your app.</text>
+
+  <text x="96" y="378" class="sans" font-size="22" font-weight="400" fill="#4A5565">Filter WooCommerce REST fields with one header.</text>
+  <text x="96" y="410" class="sans" font-size="22" font-weight="400" fill="#4A5565">Payloads up to <tspan font-weight="600" fill="#0F6E56">90% smaller</tspan>.</text>
+
+  <!-- ===== Right: before → after card ===== -->
+  <g transform="translate(884 86)">
+    <rect width="564" height="328" rx="22" fill="#FFFFFF" stroke="#E5E7EB" stroke-width="1.5" filter="url(#cardShadow)"/>
+
+    <!-- Window chrome -->
+    <circle cx="30" cy="30" r="6" fill="#E5E7EB"/>
+    <circle cx="50" cy="30" r="6" fill="#E5E7EB"/>
+    <circle cx="70" cy="30" r="6" fill="#E5E7EB"/>
+    <text x="96" y="35" class="mono" font-size="15" font-weight="500" fill="#6A7282">GET /wp-json/wc/v3/products</text>
+    <line x1="0" y1="58" x2="564" y2="58" stroke="#F3F4F6" stroke-width="1.5"/>
+
+    <!-- Before -->
+    <text x="32" y="100" class="sans" font-size="15" font-weight="600" fill="#6A7282" letter-spacing="1.2">DEFAULT RESPONSE</text>
+    <text x="532" y="100" class="mono" font-size="17" font-weight="700" fill="#6A7282" text-anchor="end">~18 KB</text>
+    <rect x="32" y="114" width="500" height="18" rx="9" fill="#D1D5DC"/>
+
+    <!-- After -->
+    <text x="32" y="176" class="sans" font-size="15" font-weight="600" fill="#0F6E56" letter-spacing="1.2">WITH SHOPMOBI</text>
+    <text x="532" y="176" class="mono" font-size="17" font-weight="700" fill="#1D9E75" text-anchor="end">~1.2 KB</text>
+    <rect x="32" y="190" width="500" height="18" rx="9" fill="#F3F4F6"/>
+    <rect x="32" y="190" width="42" height="18" rx="9" fill="url(#barGreen)"/>
+
+    <!-- Header snippet -->
+    <rect x="32" y="238" width="500" height="58" rx="12" fill="#E1F5EE"/>
+    <text x="54" y="274" class="mono" font-size="18" font-weight="500" fill="#0F6E56">X-Fields:<tspan fill="#101828"> id, name, price, images</tspan></text>
+  </g>
+
+  <!-- −90% pill -->
+  <g transform="translate(1356 58)" filter="url(#pillShadow)">
+    <rect width="118" height="50" rx="25" fill="#1D9E75"/>
+    <path d="M26 17 V33 M19 27 L26 34 L33 27" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+    <text x="44" y="33" class="sans" font-size="21" font-weight="800" fill="#FFFFFF" letter-spacing="-0.3">90%</text>
+  </g>
+</svg>
